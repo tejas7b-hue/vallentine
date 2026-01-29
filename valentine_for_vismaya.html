@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>For Vismaya 💖</title>
+
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+/* Video */
+#bgVideo {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+    display: none;
+}
+
+/* Main content */
+.box {
+    position: relative;
+    z-index: 5;
+    text-align: center;
+    padding-top: 50px;
+    color: #b30059;
+}
+
+/* Progress bar */
+#progressContainer {
+    width: 60%;
+    height: 22px;
+    background: #ffd6e6;
+    border-radius: 20px;
+    margin: 20px auto;
+    display: none;
+}
+#progressBar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #ff4d88, #ff99bb);
+    border-radius: 20px;
+    transition: width 0.3s;
+}
+
+/* Hearts */
+.heart {
+    position: absolute;
+    font-size: 90px;
+    cursor: pointer;
+    user-select: none;
+    animation: floatUp 12s linear forwards;
+}
+@keyframes floatUp {
+    from { bottom: -120px; }
+    to { bottom: 110%; }
+}
+
+/* Buttons */
+button {
+    padding: 14px 30px;
+    font-size: 20px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    background: #ff4d88;
+    color: white;
+}
+
+/* Question */
+#question {
+    display: none;
+    font-size: 32px;
+    margin-top: 60px;
+}
+
+/* Note */
+#note {
+    display: none;
+    max-width: 750px;
+    margin: 60px auto;
+    font-size: 22px;
+    color: white;
+    text-shadow: 0 0 8px rgba(0,0,0,0.6);
+}
+
+/* Outro overlay */
+#outro {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    z-index: 4;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: white;
+}
+#pulseHeart {
+    font-size: 120px;
+    animation: pulse 1.2s infinite;
+}
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.25); }
+    100% { transform: scale(1); }
+}
+#outroText {
+    font-size: 28px;
+    margin-top: 20px;
+    opacity: 0;
+    animation: fadeIn 1.5s forwards;
+}
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+/* Floating hearts ending */
+.float-heart {
+    position: absolute;
+    bottom: -50px;
+    font-size: 34px;
+    animation: floatEnd 8s linear infinite;
+}
+@keyframes floatEnd {
+    from { transform: translateY(0); opacity: 1; }
+    to { transform: translateY(-900px); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<video id="bgVideo" loop playsinline>
+    <source src="video.mp4.mp4" type="video/mp4">
+</video>
+
+<div class="box">
+    <h1 id="title">Pop the Hearts 💕</h1>
+    <p id="subtitle">Fill the Love Meter 💖</p>
+
+    <div id="progressContainer">
+        <div id="progressBar"></div>
+    </div>
+
+    <button id="startBtn" onclick="startGame()">Start Game</button>
+
+    <div id="question">
+        Will you be my Valentine forever, Vismaya? 💖 <br><br>
+        <button onclick="yesClicked()">Yes 💕</button>
+    </div>
+
+    <div id="note">
+        <strong>Dear Vismaya,</strong><br><br>
+        You have always been a special one to me — my calm in chaos,  
+        my sweet spot forever.
+        <br><br>
+        I wish that you and I stay together forever and see each other  
+        become successful together.
+        <br><br>
+        Every time I see you, it feels just like the first time  
+        I fell in love with you.
+        <br><br>
+        I love you, sweetiee!! 💕
+    </div>
+</div>
+
+<!-- Outro -->
+<div id="outro">
+    <div id="pulseHeart">💗</div>
+    <div id="outroText">You filled my heart</div>
+</div>
+
+<script>
+let popped = 0;
+const target = 25;
+let heartInterval;
+
+function startGame() {
+    document.getElementById("startBtn").style.display = "none";
+    document.getElementById("progressContainer").style.display = "block";
+    heartInterval = setInterval(spawnHeart, 900);
+}
+
+function spawnHeart() {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "💖";
+    heart.style.left = Math.random() * 80 + "vw";
+
+    heart.onclick = () => {
+        heart.remove();
+        popped++;
+        updateProgress();
+        if (popped >= target) winGame();
+    };
+
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 12000);
+}
+
+function updateProgress() {
+    document.getElementById("progressBar").style.width =
+        (popped / target) * 100 + "%";
+}
+
+function winGame() {
+    clearInterval(heartInterval);
+    document.querySelectorAll(".heart").forEach(h => h.remove());
+
+    const outro = document.getElementById("outro");
+    outro.style.display = "flex";
+
+    setTimeout(() => {
+        outro.style.display = "none";
+        showQuestion();
+    }, 3000);
+}
+
+function showQuestion() {
+    document.getElementById("title").style.display = "none";
+    document.getElementById("subtitle").style.display = "none";
+    document.getElementById("progressContainer").style.display = "none";
+    document.getElementById("question").style.display = "block";
+}
+
+function yesClicked() {
+    document.getElementById("question").style.display = "none";
+    document.getElementById("note").style.display = "block";
+
+    const video = document.getElementById("bgVideo");
+    video.style.display = "block";
+    video.muted = false;
+    video.play();
+
+    startFloatingHearts();
+}
+
+function startFloatingHearts() {
+    setInterval(() => {
+        const h = document.createElement("div");
+        h.className = "float-heart";
+        h.innerHTML = "💗";
+        h.style.left = Math.random() * 100 + "vw";
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), 8000);
+    }, 450);
+}
+</script>
+
+</body>
+</html>
